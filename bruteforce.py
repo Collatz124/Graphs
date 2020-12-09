@@ -1,44 +1,40 @@
 from itertools import permutations
-import numpy as np
+from misc import computeDistance
 
-W = [[    np.inf,   15,   51,   70,   96,   58,   45,    7,   16,   37],
-     [  15,     np.inf,   42,   66,   99,   59,   50,   19,   31,   47],
-     [  51,   42,     np.inf,   28,   74,   39,   43,   49,   64,   88],
-     [  70,   66,   28,     np.inf,   49,   26,   41,   66,   80,  107],
-     [  96,   99,   74,   49,     np.inf,   40,   51,   90,   99,  126],
-     [  58,   59,   39,   26,   40,     np.inf,   16,   52,   63,   91],
-     [  45,   50,   43,   41,   51,   16,     np.inf,   38,   48,   75],
-     [   7,   19,   49,   66,   90,   52,   38,     np.inf,   15,   40],
-     [  16,   31,   64,   80,   99,   63,   48,   15,     np.inf,   27],
-     [  37,   47,   88,  107,  126,   91,   75,   40,   27,     np.inf]]
+def bruteForce (W: [[float]], nodes: [int]) -> ([int]):
+    """ Bruteforce TSP solver """
+    # Genere alle mulige hamilton kredse
+    curcuits = [list(P) + [P[0]] for P in permutations(nodes)]
 
-nodes = list(range(1, 11))
+    n = len(curcuits) # Antallet af kredse
+    print("Posible Hamilton curcuits: {0}".format(n))
 
-# Generate routes
-routes = [list(r) + [r[0]] for r in permutations(nodes)] # Danner hamilton kredsene
+    # Tjek den første af hamilton kredsene
+    bestCurcuit = curcuits[0]
+    bestDistance = computeDistance(W, bestCurcuit) # NOTE: Finder en vejens vægt.
 
-# En funktion som beregner vægten af en vej
-def computeDistance (route: [int]) -> int:
-    total = 0
-    for i in range(len(route) - 1):
-        total += W[route[i] - 1][route[i + 1] - 1] # Tager højde for at python index starter ved 0
-    return total
+    # Tjekker de resterende hamilton kredse igennem
+    for index, c in enumerate(curcuits[1:]):
+        distance = computeDistance(W, c)
+        if distance <= bestDistance:
+            bestCurcuit = c
+            bestDistance = distance
 
-# Check all routes
-bestRoute = routes[0]
-bestDistance = computeDistance(bestRoute)
+    return bestCurcuit
 
-n = len(routes)
-print("Posible Hamilton curcuits: {0}".format(n))
+if (__name__ == "__main__"):
+    W = [[   np.inf, 15,     51,     71,     97,     58,     46,     7,      16,     37],
+         [   15,     np.inf, 42,     66,     100,    60,     57,     20,     31,     48],
+         [   51,     42,     np.inf, 29,     74,     39,     44,     49,     64,     88],
+         [   71,     66,     29,     np.inf, 49,     27,     41,     66,     80,    107],
+         [   97,     100,    74,     49,     np.inf, 40,     51,     90,     99,    126],
+         [   58,     60,     39,     27,     40,     np.inf, 17,     52,     63,     91],
+         [   46,     51,     44,     41,     51,     17,     np.inf, 39,     48,     76],
+         [    7,     20,     49,     66,     90,     52,     39,     np.inf, 15,     41],
+         [   16,     31,     64,     80,     99,     63,     48,     15,     np.inf, 28],
+         [   37,     48,     88,     107,    126,    91,     76,     41,     28,     np.inf]]
 
-# Tjekker alle de resterende hamilton kredse igennem
-for index, r in enumerate(routes[1:]):
-    distance = computeDistance(r)
-    if distance <= bestDistance:
-        bestRoute = r
-        bestDistance = distance
-    if (index % 100000 == 0):
-        print("{0:.1f} %".format(index / n * 100))
-
-print("C = {0}, D(C) = {1}".format(bestRoute, bestDistance))
-# OUTPUT: C = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], D(C) = 307
+    nodes = list(range(1, 11))
+    C = bruteForce(W, nodes)
+    print("C = {0}, D(C) = {1}".format(C, computeDistance(W, C)))
+    # OUTPUT: C = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], D(C) = 307
