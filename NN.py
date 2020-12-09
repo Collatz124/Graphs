@@ -9,19 +9,19 @@ def nearestNeighbour (weightMatrix: np.array, startingIndex: int) -> []:
     # Loop ind til alle punkter er tilfoejet
     while (len(path) < n):
 
-        # Find den punktet taettest på det nuvaerende:
+        # Find den punktet taettest paa det nuvaerende:
         nearest = None
         previusNode = path[-1] - 1 # Det sidst besoegte punkts index i matricen
 
         for i in range(n):
-            if (((i + 1) in path) == False): # Kig kun på punkter der ikke allerede er i vejen.
-                if (nearest == None): nearest = i # Hvis det er det foerste ikke besoegte punkt der kigges på.
+            if (((i + 1) in path) == False): # Kig kun paa punkter der ikke allerede er i vejen.
+                if (nearest == None): nearest = i # Hvis det er det foerste ikke besoegte punkt der kigges paa.
                 else:
                     if (weightMatrix[previusNode][i] < weightMatrix[previusNode][nearest]): nearest = i
 
         path.append(nearest + 1) # Tilfoej det taetteste punkt til vejen 
         
-    return path + [startingIndex] # Gae tilbage til det første punkt
+    return path + [startingIndex] # Gae tilbage til det foerste punkt
 
 if (__name__ == "__main__"):
     # Vaegt matrix 

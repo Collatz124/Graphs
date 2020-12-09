@@ -2,7 +2,7 @@ from itertools import permutations
 from misc import computeDistance
 
 def bruteForce (W: [[float]], nodes: [int]) -> ([int]):
-    """ Bruteforce løsning af den handelsrejsendes problem """
+    """ Bruteforce loesning af den handelsrejsendes problem """
     # Genere samtlige mulige hamilton kredse 
     # Denne tjekker den samme hamilton kreds flere gange (baglaens og forlaens)
     curcuits = [list(P) + [P[0]] for P in permutations(nodes)]
@@ -17,7 +17,7 @@ def bruteForce (W: [[float]], nodes: [int]) -> ([int]):
     # Tjekker de resterende hamilton kredse igennem
     for index, c in enumerate(curcuits[1:]):
         distance = computeDistance(W, c)
-        if distance <= bestDistance:
+        if distance < bestDistance:
             bestCurcuit = c
             bestDistance = distance
 
