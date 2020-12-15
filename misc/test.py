@@ -28,7 +28,7 @@ for i in range(n):
 
 # Print punkterne
 for i in range(n):
-    print(f"\\node[punkt] at ({round(np.cos(2 * np.pi / n * i) * r, 1)}, {round(np.sin(2 * np.pi / n * i) * r, 1)}) (v_{i + 1}) {{$v_{{{i + 1}}}$}};")
+    print(f"\\node[punkt] at ({round(np.cos(2 * np.pi / n * i + np.pi/2) * r, 1)}, {round(np.sin(2 * np.pi / n * i + np.pi/2) * r, 1)}) (v_{i + 1}) {{$v_{{{i + 1}}}$}};")
 
 """# Print Kanter
 for i in range(n - 1):

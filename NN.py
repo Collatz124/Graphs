@@ -1,27 +1,30 @@
 import numpy as np 
-from misc import computeDistance
+from misc.misc import computeDistance
 
-def nearestNeighbour (weightMatrix: np.array, startingIndex: int) -> []:
+def nearestNeighbour (W: [[float]], startingIndex: int) -> []:
     """ Find en hamilton kreds ved hjaelp af naermeste nabo algoritmen """
     path = [startingIndex]
-    n = np.shape(weightMatrix)[0] # Antallet af punkter
-
+    n = np.shape(W)[0] # Antallet af punkter
+    notVisitedYet = list(range(1, n + 1))
+    notVisitedYet.remove(startingIndex)
+    
     # Loop ind til alle punkter er tilfoejet
     while (len(path) < n):
-
-        # Find den punktet taettest paa det nuvaerende:
+        # Find punktet taettest paa det nuvaerende:
         nearest = None
         previusNode = path[-1] - 1 # Det sidst besoegte punkts index i matricen
-
-        for i in range(n):
-            if (((i + 1) in path) == False): # Kig kun paa punkter der ikke allerede er i vejen.
-                if (nearest == None): nearest = i # Hvis det er det foerste ikke besoegte punkt der kigges paa.
-                else:
-                    if (weightMatrix[previusNode][i] < weightMatrix[previusNode][nearest]): nearest = i
-
-        path.append(nearest + 1) # Tilfoej det taetteste punkt til vejen 
+        bestDistance = np.inf # Saettes til uendeligt saa nearest saettes til i ved det foeste punkt
         
-    return path + [startingIndex] # Gae tilbage til det foerste punkt
+        for i in notVisitedYet:
+            distance = W[previusNode][i - 1] # Tag hoejde for at python index starter ved 0
+            if (distance < bestDistance): 
+                nearest = i
+                bestDistance = distance
+
+        path.append(nearest) # Tilfoej det taetteste punkt til vejen 
+        notVisitedYet.remove(nearest)
+        
+    return path + [startingIndex] # Gaa tilbage til det foerste punkt
 
 if (__name__ == "__main__"):
     # Vaegt matrix 
@@ -35,6 +38,6 @@ if (__name__ == "__main__"):
          [ 7,20,49,66,90,52,39,np.inf,15,41],
          [16,31,64,80,99,63,48,15,np.inf,28],
          [37,48,88,107,126,91,76,41,28,np.inf]]
-    C = nearestNeighbour(np.array(W), 1)
+    C = nearestNeighbour(W, 1)
     print("C: {0}, D(C): {1}".format(C, computeDistance(W, C)))
     # OUTPUT: C: [1, 8, 9, 10, 2, 3, 4, 6, 7, 5, 1], D(C): 355

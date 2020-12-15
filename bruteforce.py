@@ -1,27 +1,28 @@
 from itertools import permutations
-from misc import computeDistance
+from misc.misc import computeDistance
+import numpy as np
 
-def bruteForce (W: [[float]], nodes: [int]) -> ([int]):
+def bruteForce (W: [[float]], nodes: [int], start: int) -> ([int]):
     """ Bruteforce loesning af den handelsrejsendes problem """
     # Genere samtlige mulige hamilton kredse 
     # Denne tjekker den samme hamilton kreds flere gange (baglaens og forlaens)
-    curcuits = [list(P) + [P[0]] for P in permutations(nodes)]
-
-    n = len(curcuits) # Antallet af kredse
-    print("Posible Hamilton curcuits: {0}".format(n))
+    circuits = [list(P) + [P[0]] for P in permutations(nodes)]
+    # Soerger for at der kun kigges paa de kredse med startpunkt i v_start
+    circuits = list(filter(lambda x: x[0] == start, circuits))
+    print("Posible Hamilton curcuits: {0} with start in v[{1}]".format(len(circuits), start)) 
 
     # Tjek den foerste af hamilton kredsene
-    bestCurcuit = curcuits[0]
-    bestDistance = computeDistance(W, bestCurcuit) # Finder vejens vaegt.
+    bestCircuit = circuits[0]
+    bestDistance = computeDistance(W, bestCircuit) # Finder vejens vaegt.
 
     # Tjekker de resterende hamilton kredse igennem
-    for index, c in enumerate(curcuits[1:]):
+    for index, c in enumerate(circuits[1:]):
         distance = computeDistance(W, c)
         if distance < bestDistance:
-            bestCurcuit = c
+            bestCircuit = c
             bestDistance = distance
 
-    return bestCurcuit
+    return bestCircuit
 
 if (__name__ == "__main__"):
     # Vaegt matrix
@@ -37,6 +38,6 @@ if (__name__ == "__main__"):
          [37,48,88,107,126,91,76,41,28,np.inf]]
 
     nodes = list(range(1, 11))
-    C = bruteForce(W, nodes)
+    C = bruteForce(W, nodes, 1)
     print("C = {0}, D(C) = {1}".format(C, computeDistance(W, C)))
-    # OUTPUT: C = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], D(C) = 307
+    # OUTPUT: C = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1], D(C) = 311
